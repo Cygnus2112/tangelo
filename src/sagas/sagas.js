@@ -11,7 +11,10 @@ function* signup({ info, navigation }) {
     yield call(AsyncStorage.setItem, '@first_name', user.firstName);
     yield call(AsyncStorage.setItem, '@last_name', user.lastName);
     yield put(actions.signupSuccess({user}));
-    navigation.navigate('dashboard');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'dashboard' }],
+    });
   } catch (err) {
     console.log('Signup error: ', err);
   }
@@ -33,7 +36,10 @@ function* login({ info, navigation }) {
       lastName: lastName || 'Appleseed',
     };
     yield put(actions.loginSuccess({user}));
-    navigation.navigate('dashboard');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'dashboard' }],
+    });
   } catch (err) {
     console.log('Login error: ', err);
   }
@@ -55,12 +61,21 @@ function* authCheck({ navigation }) {
         lastName: lastName || 'Appleseed',
       };
       yield put(actions.loginSuccess({user}));
-      navigation.navigate('dashboard');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'dashboard' }],
+      });
     } else {
-      navigation.navigate('signup');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'signup' }],
+      });
     }
   } catch (err) {
-    navigation.navigate('signup');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'signup' }],
+    });
   }
 }
 
@@ -73,9 +88,15 @@ function* logout({ navigation }) {
     yield call(AsyncStorage.removeItem, '@auth_token');
     yield call(AsyncStorage.removeItem, '@first_name');
     yield call(AsyncStorage.removeItem, '@last_name');
-    navigation.navigate('signup');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'login' }],
+    });
   } catch (err) {
-    navigation.navigate('signup');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'login' }],
+    });
   }
 }
 

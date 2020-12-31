@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
   SafeAreaView,
   StyleSheet,
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   ScrollView,
+  Dimensions,
+  Animated,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { TextInput, Button } from 'react-native-paper';
@@ -21,6 +22,8 @@ const isValidEmail = (email) => {
   return regExString.test(email);
 };
 
+const windowHeight = Dimensions.get('window').height;
+
 const SignupScreen = ({ navigation }) => {
   const [ email, setEmail ] = useState('');
   const [ firstName, setFirstName ] = useState('');
@@ -28,10 +31,7 @@ const SignupScreen = ({ navigation }) => {
   const [ password, setPassword ] = useState('');
   const [ passwordVisible, setPasswordVisible ] = useState(false);
   const [ emailValid, setEmailValid ] = useState(false);
-
-  // TODO: Dismiss keyboard on blur
-  // TODO: Test password check mark on diff devices
-  // TODO: Check for token on startup before transition to Signup
+  const [ topMargin, setTopMargin ] = useState(0);
 
   const dispatch = useDispatch();
   const isFetching = useSelector(state => state.isFetching);
@@ -63,10 +63,23 @@ const SignupScreen = ({ navigation }) => {
     setEmailValid(isValid);
   }, [email]);
 
+  const handleFocus = () => {
+    if (windowHeight < 750) {
+      setTopMargin(-125);
+    }
+  };
+
+  const handleBlur = () => {
+    Keyboard.dismiss();
+    if (windowHeight < 750) {
+      setTopMargin(0);
+    }
+  };
+
   return (
     <SafeAreaView style={{flex: 1, width: '100%'}}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.container}>
+      <TouchableWithoutFeedback onPress={handleBlur}>
+        <Animated.ScrollView scrollEventThrottle={1} contentContainerStyle={[styles.container, {marginTop: topMargin}]}>
           <View style={{alignSelf: 'flex-end', marginRight: 10}}>
             <Text style={{fontSize: 16, textAlign: 'right', marginVertical: 15}}>
               Already have an account? <Text onPress={handleLoginPress} style={{color: 'blue', fontWeight: '600'}}>Log in.</Text>
@@ -110,6 +123,7 @@ const SignupScreen = ({ navigation }) => {
             style={styles.input}
             theme={inputTheme}
             disabled={isFetching}
+            onFocus={handleFocus}
             right={emailValid && <TextInput.Icon name="check" color="green" />}
           />
           <TextInput
@@ -121,6 +135,7 @@ const SignupScreen = ({ navigation }) => {
             theme={inputTheme}
             secureTextEntry={!passwordVisible}
             disabled={isFetching}
+            onFocus={handleFocus}
             right={
               <TextInput.Icon
                 name={passwordVisible ? "eye-off" : "eye"}
@@ -146,7 +161,7 @@ const SignupScreen = ({ navigation }) => {
               Submit
             </Button>
           </View>
-        </ScrollView>
+        </Animated.ScrollView>
       </TouchableWithoutFeedback>
     </SafeAreaView>
   );
@@ -168,9 +183,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '600',
     textAlign: 'center',
-    borderBottomColor: 'black',
     paddingVertical: 15,
-    borderBottomWidth: 2,
   },
   container: {
     flex: 1,

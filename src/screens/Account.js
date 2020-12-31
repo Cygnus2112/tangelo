@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { LOGOUT_REQUEST } from '../actions/actions';
 import { Item } from '../components/AccountItem';
+
+const { height } = Dimensions.get('window');
 
 const items = [
   {
@@ -49,7 +51,7 @@ const AccountScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.icon}>
           <Icon size={150} name="account-circle" color="black" />
           <Text style={styles.header}>
@@ -67,7 +69,7 @@ const AccountScreen = ({ navigation }) => {
             )
           })}
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -82,14 +84,14 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   container: {
-    flex: 1,
+    height,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 20,
   },
   icon: {
-    marginTop: '20%',
+    marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },

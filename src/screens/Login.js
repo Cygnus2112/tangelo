@@ -88,17 +88,19 @@ const LoginScreen = ({ navigation }) => {
               />
             }
           />
-          <Button
-            uppercase={false}
-            onPress={handleSubmit}
-            style={styles.button}
-            labelStyle={{fontSize: 18, width: '90%'}}
-            disabled={!emailValid || !password}
-            mode="contained"
-            loading={isFetching}
-          >
-            Log in
-          </Button>
+          <View style={{flex: 1, width: '100%', alignItems: 'center'}}>
+            <Button
+              uppercase={false}
+              onPress={handleSubmit}
+              style={styles.button}
+              labelStyle={{fontSize: 18}}
+              disabled={!emailValid || !password}
+              mode="contained"
+              loading={isFetching}
+            >
+              Log in
+            </Button>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </SafeAreaView>
@@ -117,7 +119,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     height: 45,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   buttonInner: {
     width: '100%',
@@ -126,9 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '600',
     textAlign: 'center',
-    borderBottomColor: 'black',
     paddingVertical: 15,
-    borderBottomWidth: 2,
   },
   container: {
     flex: 1,
